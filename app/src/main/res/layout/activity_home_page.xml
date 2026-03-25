@@ -1,314 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/black"
-    tools:context=".HomePage">
-
-    <ImageView
+    android:background="@color/black">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.cinefast.HomeFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="225dp"
-        android:src="@drawable/cinefast"
-        />
-
-    <TextView
+        android:layout_height="match_parent" />
+    <fragment
+        android:id="@+id/seatFragment"
+        android:name="com.example.cinefast.SeatSelectionFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:textColor="@color/white"
-        android:text="Select Date"/>
-
-
-    <LinearLayout
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+    <fragment
+        android:id="@+id/snacksFragment"
+        android:name="com.example.cinefast.SnacksFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20dp">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToday"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="10dp"
-            android:text="@string/today"
-            android:minWidth="0dp"
-            android:backgroundTint="@color/orange"/>
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTomorrow"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="@string/tomorrow"
-            android:minWidth="0dp"
-            android:backgroundTint="@color/gray"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
-
-    <TextView
+    <fragment
+        android:id="@+id/summaryFragment"
+        android:name="com.example.cinefast.TicketSummaryFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/now_showing"
-        android:textColor="@color/white"
-        android:layout_marginLeft="21dp"
-        android:textStyle="bold"
-        android:textSize="30sp"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="18dp"
-            android:layout_marginTop="20dp">
-
-            <LinearLayout
-                android:id="@+id/DarkKnight"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal"
-                android:background="#1C1C1C"
-                android:clickable="true"
-                android:focusable="true">
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/dark_knight"
-                    android:scaleType="centerCrop"/>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/the_dark_knight"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/the_dark_knight_genre"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnBook"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/book_seats"
-                            app:cornerRadius="10dp"
-                            android:minWidth="0dp"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/orange"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnYoutube"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/trailer"
-                            app:icon="@android:drawable/ic_media_play"
-                            app:iconTint="@color/black"
-                            android:minWidth="0dp"
-                            android:textSize="12sp"
-                            android:textColor="@color/black"
-                            android:backgroundTint="@color/white"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/Inception"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal"
-                android:background="#1C1C1C"
-                android:clickable="true"
-                android:focusable="true">
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/inception"
-                    android:scaleType="centerCrop"/>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/inception"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/inception_genre"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnBook1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/book_seats"
-                            app:cornerRadius="10dp"
-                            android:minWidth="0dp"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/orange"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnYoutube1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:icon="@android:drawable/ic_media_play"
-                            app:iconTint="@color/black"
-                            android:text="@string/trailer"
-                            android:minWidth="0dp"
-                            android:textSize="12sp"
-                            android:textColor="@color/black"
-                            android:backgroundTint="@color/white"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/interstellar"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal"
-                android:background="#1C1C1C"
-                android:clickable="true"
-                android:focusable="true">
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/interstellar"
-                    android:scaleType="centerCrop"/>
-
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/interstellar"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/interstellar_genre"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnBook2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/book_seats"
-                            app:cornerRadius="10dp"
-                            android:minWidth="0dp"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/orange"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnYoutube2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/trailer"
-                            app:icon="@android:drawable/ic_media_play"
-                            app:iconTint="@color/black"
-                            android:minWidth="0dp"
-                            android:textSize="12sp"
-                            android:textColor="@color/black"
-                            android:backgroundTint="@color/white"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-    </ScrollView>
-
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </LinearLayout>
