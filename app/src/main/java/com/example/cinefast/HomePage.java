@@ -21,9 +21,8 @@ public class HomePage extends AppCompatActivity {
         snacksFragment = (SnacksFragment) getSupportFragmentManager().findFragmentById(R.id.snacksFragment);
         summaryFragment = (TicketSummaryFragment) getSupportFragmentManager().findFragmentById(R.id.summaryFragment);
     }
-
-    public void showSeatFragment(String movieName) {
-        seatFragment.setMovieName(movieName);
+    public void showSeatFragment(String movieName, boolean isComingSoon, String trailerUrl) {
+        seatFragment.setMovieData(movieName, isComingSoon, trailerUrl);
         showFragment(seatFragment);
     }
     public void showSnacksFragment(String movieName, int seats, int total) {
