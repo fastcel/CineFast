@@ -49,12 +49,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             activity.startActivity(intent);
         });
 
-        // Book seats button
-//        holder.btnBook.setOnClickListener(v -> {
-//            if (activity instanceof HomePage) {
-//                ((HomePage) activity).showSeatFragment(movie.getName());
-//            }
-//        });
+        holder.btnBook.setOnClickListener(v -> {
+            if (activity instanceof HomePage) {
+                ((HomePage) activity).showSeatFragment(movie.getName());
+            }
+        });
     }
 
     @Override

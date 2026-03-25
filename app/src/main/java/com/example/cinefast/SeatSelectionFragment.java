@@ -1,64 +1,99 @@
 package com.example.cinefast;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.GridLayout;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SeatSelectionFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.button.MaterialButton;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SeatSelectionFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TextView tvName, tvSeats, tvPrice;
+    private GridLayout gridLayout;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int seatPrice = 500;
+    private List<TextView> selectedSeats = new ArrayList<>();
+    private String movieName = "";
 
-    public SeatSelectionFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SeatSelectionFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SeatSelectionFragment newInstance(String param1, String param2) {
-        SeatSelectionFragment fragment = new SeatSelectionFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public SeatSelectionFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_seat_selection, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        tvName = view.findViewById(R.id.tvName);
+        tvSeats = view.findViewById(R.id.tvNumseats);
+        tvPrice = view.findViewById(R.id.tvTotalPrice);
+        gridLayout = view.findViewById(R.id.glSeats);
+        MaterialButton btnSnacks = view.findViewById(R.id.btnSnacks);
+
+        if (getArguments() != null) {
+            movieName = getArguments().getString("movieName", "");
+            tvName.setText(movieName);
+        }
+
+        for (int i = 0; i < gridLayout.getChildCount(); i++) {
+            View seat = gridLayout.getChildAt(i);
+
+            if (seat instanceof TextView) {
+                TextView seatView = (TextView) seat;
+
+                seatView.setOnClickListener(v -> toggleSeat(seatView));
+            }
+        }
+
+        // Proceed to snacks
+        btnSnacks.setOnClickListener(v -> {
+            if (getActivity() instanceof HomePage) {
+                ((HomePage) getActivity()).showSnacksFragment(
+                        movieName,
+                        selectedSeats.size(),
+                        selectedSeats.size() * seatPrice
+                );
+            }
+        });
+    }
+
+    private void toggleSeat(TextView seat) {
+        if (selectedSeats.contains(seat)) {
+            selectedSeats.remove(seat);
+            seat.setBackgroundResource(R.drawable.seat_available); // default
+        } else {
+            selectedSeats.add(seat);
+            seat.setBackgroundResource(R.drawable.seat_selected); // selected
+        }
+
+        updateUI();
+    }
+
+    public void setMovieName(String name) {
+        this.movieName = name;
+
+        if (tvName != null) { // fragment already visible
+            tvName.setText(name);
+        }
+    }
+    private void updateUI() {
+        int count = selectedSeats.size();
+        int total = count * seatPrice;
+
+        tvSeats.setText("Seats: " + count);
+        tvPrice.setText("Total: Rs " + total);
     }
 }

@@ -22,12 +22,19 @@ public class HomePage extends AppCompatActivity {
         summaryFragment = (TicketSummaryFragment) getSupportFragmentManager().findFragmentById(R.id.summaryFragment);
     }
 
-    // Show SeatSelectionFragment and pass data
-//    public void showSeatFragment(String movieName) {
-//        seatFragment.setMovieName(movieName); // setter method
-//        showFragment(seatFragment);
-//    }
+    public void showSeatFragment(String movieName) {
+        seatFragment.setMovieName(movieName);
+        showFragment(seatFragment);
+    }
+    public void showSnacksFragment(String movieName, int seats, int total) {
+        Bundle bundle = new Bundle();
+        bundle.putString("movieName", movieName);
+        bundle.putInt("seats", seats);
+        bundle.putInt("total", total);
 
+        snacksFragment.setArguments(bundle);
+        showFragment(snacksFragment);
+    }
     private void showFragment(Fragment fragmentToShow)
     {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
