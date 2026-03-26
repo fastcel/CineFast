@@ -16,6 +16,7 @@
         android:src="@drawable/cinefast"
         />
 
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +30,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:gravity="center_vertical">
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnToday"
             android:layout_width="0dp"
@@ -49,11 +52,15 @@
             android:minWidth="0dp"
             android:backgroundTint="@color/gray"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Menu"
+            android:src="@drawable/threedots"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="10dp"/>
     </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout

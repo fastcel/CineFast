@@ -20,9 +20,7 @@ public class ComingSoonFragment extends Fragment {
     private RecyclerView recyclerView;
     private MovieAdapter adapter;
     private List<Movie> movieList=new ArrayList<>();
-
     public ComingSoonFragment() {}
-
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)
     {
@@ -40,21 +38,19 @@ public class ComingSoonFragment extends Fragment {
                 "Sci-Fi / Coming Soon",
                 "https://www.youtube.com/watch?v=Way9Dexny3w",true
         ));
-
         movieList.add(new Movie(
                 R.drawable.insidious,
                 "Insidious 3",
                 "Horror / Coming Soon",
                 "https://www.youtube.com/watch?v=zuZnRUcoWos",true
         ));
-
         movieList.add(new Movie(
                 R.drawable.barbie,
                 "Barbie 2",
                 "Fantasy / Coming Soon",
                 "https://www.youtube.com/watch?v=pBk4NYhWNMM",true
         ));
-        adapter=new MovieAdapter(getActivity(), movieList);
+        adapter=new MovieAdapter(getActivity(),movieList);
         recyclerView.setAdapter(adapter);
     }
 }

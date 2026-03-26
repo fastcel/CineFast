@@ -13,7 +13,8 @@ public class HomePagerAdapter extends FragmentStateAdapter
     @Override
     public Fragment createFragment(int position)
     {
-        switch (position) {
+        switch (position) 
+        {
             case 0:
                 return new NowShowingFragment();
             case 1:
