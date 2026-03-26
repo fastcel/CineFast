@@ -1,64 +1,209 @@
 package com.example.cinefast;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TicketSummaryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
+
 public class TicketSummaryFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ArrayList<String> selectedSeats;
+    private ArrayList<String> snacks;
+    private int seatPrice;
+    private String movieName;
 
     public TicketSummaryFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TicketSummaryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TicketSummaryFragment newInstance(String param1, String param2) {
-        TicketSummaryFragment fragment = new TicketSummaryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_ticket_summary, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (snacks == null) snacks = new ArrayList<>();
+        if (movieName == null) movieName = "N/A";
+
+        updateTicketInfo(movieName, selectedSeats, seatPrice, snacks);
+
+        view.findViewById(R.id.btnSend).setOnClickListener(v -> shareTicket());
+
+
+    }
+
+    private void shareTicket() {
+        int numTickets = (selectedSeats != null) ? selectedSeats.size() : 0;
+        int seatTotal = numTickets * seatPrice;
+        int snacksTotal = 0;
+
+        if (snacks != null) {
+            for (String s : snacks) {
+                String[] parts = s.split(" x");
+                String name = parts[0];
+                int qty = (parts.length > 1) ? Integer.parseInt(parts[1]) : 1;
+                snacksTotal += getSnackPrice(name) * qty;
+            }
+        }
+
+        int totalPrice = seatTotal + snacksTotal;
+
+        // Minimal ticket text
+        String ticketText = "Movie: " + (movieName != null ? movieName : "N/A") + "\n" +
+                "Tickets Booked: " + numTickets + "\n" +
+                "Total Price: Rs " + totalPrice;
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, ticketText);
+        startActivity(Intent.createChooser(intent, "Share Ticket Via"));
+    }
+    private int getSnackPrice(String name) {
+        switch (name) {
+            case "Popcorn": return 499;
+            case "Nachos": return 799;
+            case "Soft Drinks": return 599;
+            case "Candy Mix": return 699;
+            default: return 0;
         }
     }
+    public void setData(String movieName, ArrayList<String> selectedSeats, int seatPrice, ArrayList<String> snacks) {
+        this.movieName = movieName;
+        this.selectedSeats = selectedSeats;
+        this.seatPrice = seatPrice;
+        this.snacks = snacks;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ticket_summary, container, false);
+        if (getView() != null) {
+            updateTicketInfo(movieName, selectedSeats, seatPrice, snacks);
+        }
+    }
+    public void updateTicketInfo(String movieName, ArrayList<String> selectedSeats, int seatPrice, ArrayList<String> snacks) {
+        View view = getView();
+        if (view == null) return;
+
+        LinearLayout llTickets = view.findViewById(R.id.llTickets);
+        LinearLayout llSnacks = view.findViewById(R.id.llSnacks);
+        LinearLayout llGrandTotal = view.findViewById(R.id.llGrandTotal);
+        TextView tvName = view.findViewById(R.id.tvName1);
+
+        tvName.setText(movieName);
+
+        llTickets.removeAllViews();
+        if (selectedSeats != null && !selectedSeats.isEmpty()) {
+            for (String seat : selectedSeats) {
+                LinearLayout rowLayout = new LinearLayout(getContext());
+                rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                rowLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+
+                TextView tvSeat = new TextView(getContext());
+                String row = seat.substring(0, 1);
+                String col = seat.substring(1);
+                tvSeat.setText("Row " + row + ", Seat " + col);
+                tvSeat.setTextColor(Color.WHITE);
+                tvSeat.setTextSize(18f);
+                tvSeat.setLayoutParams(new LinearLayout.LayoutParams(0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+                TextView tvPrice = new TextView(getContext());
+                tvPrice.setText("Rs " + seatPrice);
+                tvPrice.setTextColor(Color.WHITE);
+                tvPrice.setTextSize(18f);
+                tvPrice.setGravity(Gravity.END);
+                tvPrice.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+
+                rowLayout.addView(tvSeat);
+                rowLayout.addView(tvPrice);
+                llTickets.addView(rowLayout);
+            }
+        } else {
+            TextView tvNoSeats = new TextView(getContext());
+            tvNoSeats.setText("No seats selected");
+            tvNoSeats.setTextColor(Color.WHITE);
+            tvNoSeats.setTextSize(18f);
+            llTickets.addView(tvNoSeats);
+        }
+
+        llSnacks.removeAllViews();
+        int snacksTotal = 0;
+        if (snacks != null && !snacks.isEmpty()) {
+            for (String s : snacks) {
+                String[] parts = s.split(" x");
+                String snackName = parts[0];
+                int quantity = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
+
+                int pricePerItem = 0;
+                switch (snackName) {
+                    case "Popcorn": pricePerItem = 499; break;
+                    case "Nachos": pricePerItem = 799; break;
+                    case "Soft Drinks": pricePerItem = 599; break;
+                    case "Candy Mix": pricePerItem = 699; break;
+                }
+                int totalPrice = pricePerItem * quantity;
+                snacksTotal += totalPrice;
+
+                LinearLayout rowLayout = new LinearLayout(getContext());
+                rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                rowLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+
+                TextView tvSnackName = new TextView(getContext());
+                tvSnackName.setText(snackName + " x" + quantity);
+                tvSnackName.setTextColor(Color.WHITE);
+                tvSnackName.setTextSize(18f);
+                tvSnackName.setLayoutParams(new LinearLayout.LayoutParams(0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+                TextView tvSnackPrice = new TextView(getContext());
+                tvSnackPrice.setText("Rs " + totalPrice);
+                tvSnackPrice.setTextColor(Color.WHITE);
+                tvSnackPrice.setTextSize(18f);
+                tvSnackPrice.setGravity(Gravity.END);
+                tvSnackPrice.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+
+                rowLayout.addView(tvSnackName);
+                rowLayout.addView(tvSnackPrice);
+                llSnacks.addView(rowLayout);
+            }
+        } else {
+            TextView tvNoSnacks = new TextView(getContext());
+            tvNoSnacks.setText("No snacks selected");
+            tvNoSnacks.setTextColor(Color.WHITE);
+            tvNoSnacks.setTextSize(18f);
+            llSnacks.addView(tvNoSnacks);
+        }
+
+        llGrandTotal.removeAllViews();
+        TextView tvTotal = new TextView(getContext());
+        int total = (selectedSeats != null ? selectedSeats.size() : 0) * seatPrice + snacksTotal;
+        tvTotal.setText("Total: Rs " + total);
+        tvTotal.setTextColor(Color.WHITE);
+        tvTotal.setTextSize(20f);
+        llGrandTotal.addView(tvTotal);
     }
 }

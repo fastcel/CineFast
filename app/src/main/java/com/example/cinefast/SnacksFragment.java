@@ -1,14 +1,13 @@
 package com.example.cinefast;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -28,9 +27,9 @@ public class SnacksFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         listView = view.findViewById(R.id.listViewSnacks);
+        Button btnGo = view.findViewById(R.id.btnGo);
 
         snackList = new ArrayList<>();
-
         snackList.add(new Snack(R.drawable.popcorn, "Popcorn", "Large Buttered", 499));
         snackList.add(new Snack(R.drawable.nachos, "Nachos", "With Cheese Dip", 799));
         snackList.add(new Snack(R.drawable.drinks, "Soft Drinks", "Large Any Flavor", 599));
@@ -38,5 +37,34 @@ public class SnacksFragment extends Fragment {
 
         SnackAdapter adapter = new SnackAdapter(getContext(), snackList);
         listView.setAdapter(adapter);
+
+        btnGo.setOnClickListener(v -> {
+            ArrayList<String> selectedSnacks = new ArrayList<>();
+            int snacksTotal = 0;
+            for (Snack s : snackList) {
+                if (s.getQuantity() > 0) {
+                    selectedSnacks.add(s.getName() + " x" + s.getQuantity());
+                    snacksTotal += s.getPrice() * s.getQuantity();
+                }
+            }
+
+            Bundle args = getArguments();
+            String movieName = args != null ? args.getString("movieName", "N/A") : "N/A";
+            ArrayList<String> selectedSeats = args != null ?
+                    args.getStringArrayList("selectedSeats") : new ArrayList<>();
+            int seatPrice = args != null ? args.getInt("seatPrice", 500) : 500;
+
+            int seatsTotal = (selectedSeats != null ? selectedSeats.size() : 0) * seatPrice;
+            int grandTotal = seatsTotal + snacksTotal;
+
+            if (getActivity() instanceof HomePage) {
+                ((HomePage) getActivity()).showTicketSummaryFragment(
+                        movieName,
+                        selectedSeats,
+                        seatPrice,
+                        selectedSnacks
+                );
+            }
+        });
     }
 }

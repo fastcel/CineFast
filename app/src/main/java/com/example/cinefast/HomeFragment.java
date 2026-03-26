@@ -22,24 +22,17 @@ public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
-
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        tabLayout = view.findViewById(R.id.tabLayout);
-        viewPager = view.findViewById(R.id.viewPager);
-
-        // Set adapter for ViewPager2
-        HomePagerAdapter adapter = new HomePagerAdapter(this);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view,savedInstanceState);
+        tabLayout=view.findViewById(R.id.tabLayout);
+        viewPager=view.findViewById(R.id.viewPager);
+        HomePagerAdapter adapter=new HomePagerAdapter(this);
         viewPager.setAdapter(adapter);
-
-        // Link TabLayout and ViewPager2
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
                     if (position == 0) tab.setText("Now Showing");

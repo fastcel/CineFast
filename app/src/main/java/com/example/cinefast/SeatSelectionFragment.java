@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.GridLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,10 +22,11 @@ public class SeatSelectionFragment extends Fragment {
 
     private TextView tvName, tvSeats, tvPrice;
     private GridLayout gridLayout;
+    private List<TextView> selectedSeats = new ArrayList<>();
+    private List<String> selectedSeatNames = new ArrayList<>();
+    private List<String> occupiedSeats = new ArrayList<>();
 
     private int seatPrice = 500;
-    private List<TextView> selectedSeats = new ArrayList<>();
-
     private String movieName = "";
     private boolean isComingSoon = false;
     private String trailerUrl = "";
@@ -34,107 +34,132 @@ public class SeatSelectionFragment extends Fragment {
     public SeatSelectionFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.fragment_seat_selection,container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_seat_selection, container, false);
     }
+
     @Override
-    public void onViewCreated(@NonNull View view,@Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view,savedInstanceState);
-        tvName=view.findViewById(R.id.tvName);
-        tvSeats=view.findViewById(R.id.tvNumseats);
-        tvPrice=view.findViewById(R.id.tvTotalPrice);
-        gridLayout=view.findViewById(R.id.glSeats);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        tvName = view.findViewById(R.id.tvName);
+        tvSeats = view.findViewById(R.id.tvNumseats);
+        tvPrice = view.findViewById(R.id.tvTotalPrice);
+        gridLayout = view.findViewById(R.id.glSeats);
     }
-    public void setMovieData(String name,boolean isComingSoon,String trailerUrl)
-    {
-        this.movieName=name;
-        this.isComingSoon=isComingSoon;
-        this.trailerUrl=trailerUrl;
-        if (getView()!=null)
-        {
+
+    public void setMovieData(String name, boolean isComingSoon, String trailerUrl) {
+        this.movieName = name;
+        this.isComingSoon = isComingSoon;
+        this.trailerUrl = trailerUrl;
+        if (getView() != null) {
             tvName.setText(name);
             applyMovieTypeUI();
         }
     }
-    private void applyMovieTypeUI()
-    {
-        if (getView()==null) return;
-        MaterialButton btnSnacks=getView().findViewById(R.id.btnSnacks);
-        MaterialButton btnBook=getView().findViewById(R.id.btnBookseats);
-        tvName.setText(movieName);
+
+    private void applyMovieTypeUI() {
+        if (getView() == null) return;
+
+        MaterialButton btnSnacks = getView().findViewById(R.id.btnSnacks);
+        MaterialButton btnBook = getView().findViewById(R.id.btnBookseats);
+
         selectedSeats.clear();
+        selectedSeatNames.clear();
         updateUI();
-        for (int i=0;i<gridLayout.getChildCount();i++)
-        {
-            View seat=gridLayout.getChildAt(i);
-            if (seat instanceof TextView)
-            {
-                TextView seatView=(TextView) seat;
-                if (!isComingSoon)
-                {
-                    seatView.setEnabled(true);
-                    seatView.setAlpha(1f);
-                    seatView.setOnClickListener(v -> toggleSeat(seatView));
-                } else
-                {
-                    seatView.setEnabled(false);
-                    seatView.setAlpha(0.5f);
-                    seatView.setOnClickListener(null);
-                }
+        initOccupiedSeats();
+
+        // Setup seats in the grid
+        for (int i = 0; i < gridLayout.getChildCount(); i++) {
+            View seatView = gridLayout.getChildAt(i);
+            if (!(seatView instanceof TextView)) continue;
+
+            TextView seat = (TextView) seatView;
+            String row = String.valueOf((char) ('A' + i / 6));
+            int col = (i % 6) + 1;
+            String seatName = row + col;
+            seat.setText("");
+
+            if (occupiedSeats.contains(seatName)) {
+                seat.setEnabled(false);
+                seat.setBackgroundResource(R.drawable.seat_booked);
+                seat.setAlpha(0.5f);
+                seat.setOnClickListener(null);
+            } else if (!isComingSoon) {
+                seat.setEnabled(true);
+                seat.setBackgroundResource(R.drawable.seat_available);
+                seat.setAlpha(1f);
+                seat.setOnClickListener(v -> toggleSeat(seat, seatName));
+            } else {
+                seat.setEnabled(false);
+                seat.setAlpha(0.5f);
+                seat.setOnClickListener(null);
             }
         }
+
         if (isComingSoon) {
             btnBook.setText("Coming Soon");
             btnBook.setEnabled(false);
             btnSnacks.setText("Watch Trailer");
-            btnSnacks.setOnClickListener(v ->
-            {
-                Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse(trailerUrl));
-                startActivity(intent);
-            });
-
-        }
-        else
-        {
+            btnSnacks.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))));
+        } else {
             btnBook.setText("Book Seats");
             btnBook.setEnabled(true);
             btnSnacks.setText("Proceed to Snacks");
-            btnSnacks.setOnClickListener(v ->
-            {
-                if (getActivity() instanceof HomePage)
-                {
+
+            // Proceed to Snacks → PASS seat NAMES
+            btnSnacks.setOnClickListener(v -> {
+                if (getActivity() instanceof HomePage) {
+                    ArrayList<String> seatsToPass = new ArrayList<>(selectedSeatNames);
+                    int seatsTotal = selectedSeats.size() * seatPrice;
                     ((HomePage) getActivity()).showSnacksFragment(
                             movieName,
-                            selectedSeats.size(),
-                            selectedSeats.size()*seatPrice
+                            seatsToPass,  // seat names
+                            seatPrice,
+                            seatsTotal
                     );
                 }
             });
-            btnBook.setOnClickListener(v ->
-            {
-                Toast.makeText(getContext(),"Booking Confirmed!",Toast.LENGTH_SHORT).show();
+
+            // Book Seats → PASS seat NAMES
+            btnBook.setOnClickListener(v -> {
+                if (getActivity() instanceof HomePage) {
+                    ArrayList<String> seatsToPass = new ArrayList<>(selectedSeatNames);
+                    int total = selectedSeats.size() * seatPrice;
+                    ((HomePage) getActivity()).showTicketSummaryFragment(
+                            movieName,
+                            seatsToPass, // ✅ pass seat names
+                            seatPrice,
+                            new ArrayList<>() // snacks if any
+                    );
+                    ((HomePage) getActivity()).saveLastBooking(movieName, selectedSeats.size(), total);
+                }
             });
         }
     }
 
-    private void toggleSeat(TextView seat)
-    {
-        if (selectedSeats.contains(seat))
-        {
+    private void toggleSeat(TextView seat, String seatName) {
+        if (selectedSeats.contains(seat)) {
             selectedSeats.remove(seat);
+            selectedSeatNames.remove(seatName);
             seat.setBackgroundResource(R.drawable.seat_available);
-        } else
-        {
+        } else {
             selectedSeats.add(seat);
+            selectedSeatNames.add(seatName);
             seat.setBackgroundResource(R.drawable.seat_selected);
         }
         updateUI();
     }
+
+    private void initOccupiedSeats() {
+        occupiedSeats.clear();
+        occupiedSeats.add("A1");
+        occupiedSeats.add("B3");
+        occupiedSeats.add("C5");
+    }
+
     private void updateUI() {
-        int count=selectedSeats.size();
-        int total=count*seatPrice;
+        int count = selectedSeats.size();
+        int total = count * seatPrice;
         tvSeats.setText("Seats: " + count);
         tvPrice.setText("Total: Rs " + total);
     }

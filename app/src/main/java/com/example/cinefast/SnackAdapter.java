@@ -16,6 +16,16 @@ import java.util.List;
 
 public class SnackAdapter extends ArrayAdapter<Snack> {
 
+    public interface OnQuantityChangeListener {
+        void onQuantityChanged(int snackTotal);
+    }
+
+    private OnQuantityChangeListener listener;
+
+    public void setOnQuantityChangeListener(OnQuantityChangeListener listener) {
+        this.listener = listener;
+    }
+
     public SnackAdapter(Context context, List<Snack> snacks) {
         super(context, 0, snacks);
     }
@@ -30,8 +40,7 @@ public class SnackAdapter extends ArrayAdapter<Snack> {
         }
 
         Snack snack = getItem(position);
-
-        if (snack == null) return convertView; // 🔥 prevents crash
+        if (snack == null) return convertView;
 
         ImageView image = convertView.findViewById(R.id.snackImage);
         TextView name = convertView.findViewById(R.id.snackName);
@@ -47,17 +56,24 @@ public class SnackAdapter extends ArrayAdapter<Snack> {
         price.setText("Rs " + snack.getPrice());
         quantity.setText(String.valueOf(snack.getQuantity()));
 
-        btnInc.setOnClickListener(v -> {
-            snack.setQuantity(snack.getQuantity() + 1);
-            quantity.setText(String.valueOf(snack.getQuantity()));
-        });
+        View.OnClickListener updateQuantity = v -> {
+            if (v == btnInc) snack.setQuantity(snack.getQuantity() + 1);
+            else if (v == btnDec && snack.getQuantity() > 0) snack.setQuantity(snack.getQuantity() - 1);
 
-        btnDec.setOnClickListener(v -> {
-            if (snack.getQuantity() > 0) {
-                snack.setQuantity(snack.getQuantity() - 1);
-                quantity.setText(String.valueOf(snack.getQuantity()));
+            quantity.setText(String.valueOf(snack.getQuantity()));
+            price.setText("Rs " + (snack.getPrice() * snack.getQuantity()));
+
+            int total = 0;
+            for (int i = 0; i < getCount(); i++) {
+                Snack s = getItem(i);
+                if (s != null) total += s.getPrice() * s.getQuantity();
             }
-        });
+
+            if (listener != null) listener.onQuantityChanged(total);
+        };
+
+        btnInc.setOnClickListener(updateQuantity);
+        btnDec.setOnClickListener(updateQuantity);
 
         return convertView;
     }
