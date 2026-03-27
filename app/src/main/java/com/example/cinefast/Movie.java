@@ -14,7 +14,6 @@ public class Movie {
         this.trailerUrl=trailerUrl;
         this.isComingSoon=isComingSoon;
     }
-
     public int getPosterResId() { return posterResId; }
     public boolean isComingSoon() { return isComingSoon; }
     public String getName() { return name; }

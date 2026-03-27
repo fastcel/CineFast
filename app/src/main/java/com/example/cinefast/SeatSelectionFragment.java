@@ -61,23 +61,26 @@ public class SeatSelectionFragment extends Fragment {
             applyMovieTypeUI();
         }
     }
-    private void applyMovieTypeUI()
-    {
+    private void applyMovieTypeUI() {
         if (getView()==null) return;
         MaterialButton btnSnacks=getView().findViewById(R.id.btnSnacks);
-        MaterialButton btnBook=getView().findViewById(R.id.btnBookseats);
+        MaterialButton btnBook = getView().findViewById(R.id.btnBookseats);
         selectedSeats.clear();
         selectedSeatNames.clear();
         updateUI();
+        if (!isComingSoon) {
+            btnBook.setEnabled(false);
+            btnSnacks.setEnabled(false);
+        }
         initOccupiedSeats();
-        for (int i = 0; i<gridLayout.getChildCount();i++)
+        for (int i=0; i<gridLayout.getChildCount();i++)
         {
-            View seatView=gridLayout.getChildAt(i);
+            View seatView = gridLayout.getChildAt(i);
             if (!(seatView instanceof TextView)) continue;
             TextView seat=(TextView) seatView;
-            String row = String.valueOf((char) ('A'+i/6));
-            int col = (i % 6) + 1;
-            String seatName = row + col;
+            String row=String.valueOf((char) ('A'+i/6));
+            int col=(i%6)+1;
+            String seatName=row+col;
             seat.setText("");
             if (occupiedSeats.contains(seatName))
             {
@@ -90,28 +93,26 @@ public class SeatSelectionFragment extends Fragment {
                 seat.setEnabled(true);
                 seat.setBackgroundResource(R.drawable.seat_available);
                 seat.setAlpha(1f);
-                seat.setOnClickListener(v -> toggleSeat(seat,seatName));
+                seat.setOnClickListener(v->toggleSeat(seat,seatName,btnBook,btnSnacks));
             } else {
                 seat.setEnabled(false);
                 seat.setAlpha(0.5f);
                 seat.setOnClickListener(null);
             }
         }
+
         if (isComingSoon) {
             btnBook.setText("Coming Soon");
             btnBook.setEnabled(false);
             btnSnacks.setText("Watch Trailer");
-            btnSnacks.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))));
+            btnSnacks.setOnClickListener(v->startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(trailerUrl))));
         } else {
             btnBook.setText("Book Seats");
-            btnBook.setEnabled(true);
             btnSnacks.setText("Proceed to Snacks");
-            btnSnacks.setOnClickListener(v ->
-            {
-                if (getActivity() instanceof HomePage)
-                {
+            btnSnacks.setOnClickListener(v -> {
+                if (getActivity() instanceof HomePage) {
                     ArrayList<String> seatsToPass=new ArrayList<>(selectedSeatNames);
-                    int seatsTotal=selectedSeats.size() * seatPrice;
+                    int seatsTotal=selectedSeats.size()*seatPrice;
                     ((HomePage) getActivity()).showSnacksFragment(
                             movieName,
                             seatsToPass,
@@ -121,27 +122,26 @@ public class SeatSelectionFragment extends Fragment {
                 }
             });
 
-            btnBook.setOnClickListener(v ->
-            {
-                if (getActivity() instanceof HomePage)
-                {
+            btnBook.setOnClickListener(v -> {
+                if (getActivity() instanceof HomePage) {
                     ArrayList<String> seatsToPass=new ArrayList<>(selectedSeatNames);
-                    int total=selectedSeats.size() * seatPrice;
-                    Toast.makeText(getContext(),"Booking Confirmed!", Toast.LENGTH_SHORT).show();
+                    int total=selectedSeats.size()*seatPrice;
+                    Toast.makeText(getContext(),"Booking Confirmed!",Toast.LENGTH_SHORT).show();
                     ((HomePage) getActivity()).showTicketSummaryFragment(
                             movieName,
                             seatsToPass,
                             seatPrice,
                             new ArrayList<>()
                     );
-                    ((HomePage) getActivity()).saveLastBooking(movieName, selectedSeats.size(),total);
+                    ((HomePage) getActivity()).saveLastBooking(movieName,selectedSeats.size(),total);
                 }
             });
         }
     }
 
-    private void toggleSeat(TextView seat, String seatName) {
-        if (selectedSeats.contains(seat)) {
+    private void toggleSeat(TextView seat,String seatName,MaterialButton btnBook,MaterialButton btnSnacks) {
+        if (selectedSeats.contains(seat))
+        {
             selectedSeats.remove(seat);
             selectedSeatNames.remove(seatName);
             seat.setBackgroundResource(R.drawable.seat_available);
@@ -151,6 +151,9 @@ public class SeatSelectionFragment extends Fragment {
             seat.setBackgroundResource(R.drawable.seat_selected);
         }
         updateUI();
+        boolean hasSelection=!selectedSeats.isEmpty();
+        btnBook.setEnabled(hasSelection);
+        btnSnacks.setEnabled(hasSelection);
     }
 
     private void initOccupiedSeats() {

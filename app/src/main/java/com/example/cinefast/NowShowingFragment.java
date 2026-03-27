@@ -18,7 +18,7 @@ public class NowShowingFragment extends Fragment {
     private MovieAdapter adapter;
     private List<Movie> movieList=new ArrayList<>();
 
-    public NowShowingFragment() { }
+    public NowShowingFragment() {}
 
     @Nullable
     @Override

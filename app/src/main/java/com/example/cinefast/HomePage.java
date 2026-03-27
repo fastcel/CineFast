@@ -40,8 +40,6 @@ public class HomePage extends AppCompatActivity {
             }
         });
     }
-
-
     public void showSeatFragment(String movieName, boolean isComingSoon, String trailerUrl) {
         seatFragment.setMovieData(movieName,isComingSoon,trailerUrl);
         showFragment(seatFragment);
