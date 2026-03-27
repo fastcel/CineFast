@@ -46,12 +46,7 @@ public class HomePage extends AppCompatActivity {
     }
     public void showSnacksFragment(String movieName,ArrayList<String> selectedSeats,int seatPrice,int seatsTotal)
     {
-        Bundle bundle=new Bundle();
-        bundle.putString("movieName",movieName);
-        bundle.putStringArrayList("selectedSeats",selectedSeats);
-        bundle.putInt("seatPrice",seatPrice);
-        bundle.putInt("total",seatsTotal);
-        snacksFragment.setArguments(bundle);
+        snacksFragment.setData(movieName,selectedSeats,seatPrice,seatsTotal);
         showFragment(snacksFragment);
     }
     public void showTicketSummaryFragment(String movieName,ArrayList<String>selectedSeats,int seatPrice,ArrayList<String> snacks)
@@ -67,18 +62,6 @@ public class HomePage extends AppCompatActivity {
                 .putInt("seats", seats)
                 .putInt("total", total)
                 .apply();
-    }
-    public Bundle getLastBooking()
-    {
-        SharedPreferences prefs=getSharedPreferences("LAST_BOOKING",MODE_PRIVATE);
-        Bundle bundle = new Bundle();
-        if (prefs.contains("movieName"))
-        {
-            bundle.putString("movieName",prefs.getString("movieName",""));
-            bundle.putInt("seats",prefs.getInt("seats",0));
-            bundle.putInt("total",prefs.getInt("total",0));
-        }
-        return bundle;
     }
     private void showFragment(Fragment fragmentToShow)
     {

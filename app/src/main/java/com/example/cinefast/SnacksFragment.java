@@ -14,6 +14,10 @@ public class SnacksFragment extends Fragment
 {
     ListView listView;
     ArrayList<Snack> snackList;
+    String movieName;
+    ArrayList<String> selectedSeats;
+    int seatPrice;
+    int seatsTotal;
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_snacks,container,false);
@@ -30,25 +34,19 @@ public class SnacksFragment extends Fragment
         snackList.add(new Snack(R.drawable.candymix,"Candy Mix","Assorted Candies",699));
         SnackAdapter adapter=new SnackAdapter(getContext(),snackList);
         listView.setAdapter(adapter);
-        btnGo.setOnClickListener(v -> {
-            ArrayList<String> selectedSnacks=new ArrayList<>();
-            int snacksTotal=0;
-            for (Snack s:snackList)
-            {
-                if (s.getQuantity()>0)
-                {
-                    selectedSnacks.add(s.getName()+" x"+s.getQuantity());
+
+        btnGo.setOnClickListener(v ->{
+            ArrayList<String> selectedSnacks = new ArrayList<>();
+            int snacksTotal = 0;
+            for (Snack s:snackList) {
+                if (s.getQuantity()>0) {
+                    selectedSnacks.add(s.getName()+" x" +s.getQuantity());
                     snacksTotal+=s.getPrice()*s.getQuantity();
                 }
             }
-            Bundle args=getArguments();
-            String movieName=args!=null?args.getString("movieName","N/A"):"N/A";
-            ArrayList<String> selectedSeats=args!=null?args.getStringArrayList("selectedSeats"):new ArrayList<>();
-            int seatPrice=args!=null?args.getInt("seatPrice",500) : 500;
-            int seatsTotal=(selectedSeats != null ? selectedSeats.size():0)*seatPrice;
+            int seatsTotal=(selectedSeats != null ? selectedSeats.size() : 0) * seatPrice;
             int grandTotal=seatsTotal+snacksTotal;
-            if (getActivity() instanceof HomePage)
-            {
+            if (getActivity() instanceof HomePage) {
                 ((HomePage) getActivity()).showTicketSummaryFragment(
                         movieName,
                         selectedSeats,
@@ -57,5 +55,11 @@ public class SnacksFragment extends Fragment
                 );
             }
         });
+    }
+    public void setData(String movieName, ArrayList<String> selectedSeats, int seatPrice, int seatsTotal) {
+        this.movieName = movieName;
+        this.selectedSeats = selectedSeats;
+        this.seatPrice = seatPrice;
+        this.seatsTotal = seatsTotal;
     }
 }
