@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 public class SnacksFragment extends Fragment
 {
@@ -46,6 +48,8 @@ public class SnacksFragment extends Fragment
             }
             int seatsTotal=(selectedSeats != null ? selectedSeats.size() : 0) * seatPrice;
             int grandTotal=seatsTotal+snacksTotal;
+            Toast.makeText(getContext(),"Booking Confirmed!",Toast.LENGTH_SHORT).show();
+
             if (getActivity() instanceof HomePage) {
                 ((HomePage) getActivity()).showTicketSummaryFragment(
                         movieName,
