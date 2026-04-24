@@ -24,7 +24,7 @@ public class OnboardPage extends AppCompatActivity {
         });
         init();
         btnGo.setOnClickListener((view) -> {
-            Intent intent = new Intent(this, HomePage.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
 
