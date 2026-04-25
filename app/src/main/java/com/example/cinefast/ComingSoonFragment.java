@@ -12,6 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,30 +32,37 @@ public class ComingSoonFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_coming_soon,container,false);
     }
     @Override
-    public void onViewCreated(@NonNull View view,@Nullable Bundle savedInstanceState)
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
-        super.onViewCreated(view,savedInstanceState);
-        recyclerView=view.findViewById(R.id.recyclerViewMovies);
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerViewMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        movieList.add(new Movie(
-                R.drawable.dune,
-                "Dune Part 2",
-                "Sci-Fi / Coming Soon",
-                "https://www.youtube.com/watch?v=Way9Dexny3w",true
-        ));
-        movieList.add(new Movie(
-                R.drawable.insidious,
-                "Insidious 3",
-                "Horror / Coming Soon",
-                "https://www.youtube.com/watch?v=zuZnRUcoWos",true
-        ));
-        movieList.add(new Movie(
-                R.drawable.barbie,
-                "Barbie 2",
-                "Fantasy / Coming Soon",
-                "https://www.youtube.com/watch?v=pBk4NYhWNMM",true
-        ));
-        adapter=new MovieAdapter(getActivity(),movieList);
+        List<Movie> movieList = new ArrayList<>();
+        try {
+            InputStream is = requireContext().getAssets().open("movies.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, StandardCharsets.UTF_8);
+            JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                boolean isComingSoon = obj.getBoolean("isComingSoon");
+                if (isComingSoon) {
+                    movieList.add(new Movie(
+                            obj.getString("poster"),
+                            obj.getString("name"),
+                            obj.getString("genre"),
+                            obj.getString("trailerUrl"),
+                            true
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        adapter = new MovieAdapter(getActivity(), movieList);
         recyclerView.setAdapter(adapter);
     }
 }

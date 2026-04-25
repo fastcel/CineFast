@@ -1,6 +1,5 @@
 package com.example.cinefast;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -21,34 +20,41 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private List<Movie> movies;
     private FragmentActivity activity;
-    public MovieAdapter(FragmentActivity activity,List<Movie> movies)
-    {
+
+    public MovieAdapter(FragmentActivity activity, List<Movie> movies) {
         this.activity = activity;
         this.movies = movies;
     }
+
     @NonNull
     @Override
-    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent,int viewType)
-    {
+    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_item_layout, parent, false);
         return new MovieViewHolder(view);
     }
+
     @Override
-    public void onBindViewHolder(@NonNull MovieViewHolder holder,int position)
-    {
-        Movie movie=movies.get(position);
-        holder.poster.setImageResource(movie.getPosterResId());
+    public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
+
+        Movie movie = movies.get(position);
+        int resId = activity.getResources().getIdentifier(
+                movie.getPoster(),
+                "drawable",
+                activity.getPackageName()
+        );
+
+        holder.poster.setImageResource(resId);
         holder.name.setText(movie.getName());
         holder.genre.setText(movie.getGenre());
-        holder.btnTrailer.setOnClickListener(v ->
-        {
-            Intent intent=new Intent(Intent.ACTION_VIEW);
+
+        holder.btnTrailer.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(movie.getTrailerUrl()));
             activity.startActivity(intent);
         });
-        holder.btnBook.setOnClickListener(v ->
-        {
+
+        holder.btnBook.setOnClickListener(v -> {
             if (activity instanceof HomePage) {
                 ((HomePage) activity).showSeatFragment(
                         movie.getName(),
@@ -58,23 +64,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             }
         });
     }
+
     @Override
     public int getItemCount() {
         return movies.size();
     }
-    static class MovieViewHolder extends RecyclerView.ViewHolder
-    {
+
+    static class MovieViewHolder extends RecyclerView.ViewHolder {
+
         ImageView poster;
-        TextView name,genre;
-        MaterialButton btnBook,btnTrailer;
-        public MovieViewHolder(@NonNull View itemView)
-        {
+        TextView name, genre;
+        MaterialButton btnBook, btnTrailer;
+
+        public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
-            poster=itemView.findViewById(R.id.moviePoster);
-            name=itemView.findViewById(R.id.movieName);
-            genre=itemView.findViewById(R.id.movieGenre);
-            btnBook=itemView.findViewById(R.id.btnBook);
-            btnTrailer=itemView.findViewById(R.id.btnYoutube);
+            poster = itemView.findViewById(R.id.moviePoster);
+            name = itemView.findViewById(R.id.movieName);
+            genre = itemView.findViewById(R.id.movieGenre);
+            btnBook = itemView.findViewById(R.id.btnBook);
+            btnTrailer = itemView.findViewById(R.id.btnYoutube);
         }
     }
 }

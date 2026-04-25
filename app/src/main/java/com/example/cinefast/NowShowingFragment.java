@@ -9,6 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +35,37 @@ public class NowShowingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
-        super.onViewCreated(view,savedInstanceState);
-        recyclerView=view.findViewById(R.id.recyclerViewMovies);
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerViewMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        movieList.add(new Movie(R.drawable.dark_knight, "The Dark Knight", "Action / 2h 32m", "https://www.youtube.com/watch?v=EXeTwQWrcwY",false));
-        movieList.add(new Movie(R.drawable.inception, "Inception", "Sci-Fi / 2h 28m", "https://www.youtube.com/watch?v=YoHD9XEInc0",false));
-        movieList.add(new Movie(R.drawable.interstellar, "Interstellar", "Sci-Fi / 2h 49m", "https://www.youtube.com/watch?v=zSWdZVtXT7E",false));
-        adapter=new MovieAdapter(getActivity(),movieList);
+        List<Movie> movieList = new ArrayList<>();
+        try {
+            InputStream is = requireContext().getAssets().open("movies.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, StandardCharsets.UTF_8);
+            JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                boolean isComingSoon = obj.getBoolean("isComingSoon");
+                if (!isComingSoon) {
+                    movieList.add(new Movie(
+                            obj.getString("poster"),
+                            obj.getString("name"),
+                            obj.getString("genre"),
+                            obj.getString("trailerUrl"),
+                            false
+                    ));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        adapter = new MovieAdapter(getActivity(), movieList);
         recyclerView.setAdapter(adapter);
     }
 }

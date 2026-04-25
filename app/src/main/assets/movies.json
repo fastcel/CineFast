@@ -1,0 +1,44 @@
+[
+  {
+    "name": "The Dark Knight",
+    "genre": "Action / 2h 32m",
+    "poster": "dark_knight",
+    "trailerUrl": "https://www.youtube.com/watch?v=EXeTwQWrcwY",
+    "isComingSoon": false
+  },
+  {
+    "name": "Inception",
+    "genre": "Sci-Fi / 2h 28m",
+    "poster": "inception",
+    "trailerUrl": "https://www.youtube.com/watch?v=YoHD9XEInc0",
+    "isComingSoon": false
+  },
+  {
+    "name": "Interstellar",
+    "genre": "Sci-Fi / 2h 49m",
+    "poster": "interstellar",
+    "trailerUrl": "https://www.youtube.com/watch?v=zSWdZVtXT7E",
+    "isComingSoon": false
+  },
+  {
+    "name": "Dune Part 2",
+    "genre": "Sci-Fi / Coming Soon",
+    "poster": "dune",
+    "trailerUrl": "https://www.youtube.com/watch?v=Way9Dexny3w",
+    "isComingSoon": true
+  },
+  {
+    "name": "Insidious 3",
+    "genre": "Horror / Coming Soon",
+    "poster": "insidious",
+    "trailerUrl": "https://www.youtube.com/watch?v=zuZnRUcoWos",
+    "isComingSoon": true
+  },
+  {
+    "name": "Barbie 2",
+    "genre": "Fantasy / Coming Soon",
+    "poster": "barbie",
+    "trailerUrl": "https://www.youtube.com/watch?v=pBk4NYhWNMM",
+    "isComingSoon": true
+  }
+]
