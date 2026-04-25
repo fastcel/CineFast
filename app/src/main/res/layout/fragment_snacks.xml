@@ -50,17 +50,23 @@
 
 
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnGo"
-        android:layout_margin="15dp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/confirm"
-        android:textSize="20sp"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:padding="0dp"
-        android:backgroundTint="@color/orange"
-        app:cornerRadius="8dp"/>
+        android:paddingBottom="35dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm"
+            android:textSize="20sp"
+            android:layout_margin="15dp"
+            android:layout_marginBottom="20dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            android:backgroundTint="@color/orange"
+            app:cornerRadius="8dp"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -19,6 +19,7 @@
         android:layout_marginBottom="30dp"/>
 
     <TextView
+        android:layout_marginHorizontal="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
@@ -26,6 +27,7 @@
         android:layout_marginBottom="8dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:boxBackgroundMode="filled"
@@ -44,6 +46,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:layout_marginHorizontal="20dp"
         android:layout_height="wrap_content"
         android:text="Email"
         android:textColor="#FFFFFF"
@@ -51,6 +54,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
         android:layout_height="wrap_content"
         app:boxBackgroundMode="filled"
         app:boxBackgroundColor="#2E2E2E">
@@ -68,6 +72,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:layout_marginHorizontal="20dp"
         android:layout_height="wrap_content"
         android:text="Password"
         android:textColor="#FFFFFF"
@@ -75,6 +80,7 @@
         android:layout_marginBottom="8dp"/>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
         android:layout_height="wrap_content"
         app:boxBackgroundMode="filled"
         app:boxBackgroundColor="#2E2E2E"
@@ -93,6 +99,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:layout_marginHorizontal="20dp"
         android:layout_height="wrap_content"
         android:text="Confirm Password"
         android:textColor="#FFFFFF"
@@ -101,6 +108,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
         app:boxBackgroundMode="filled"
         app:boxBackgroundColor="#2E2E2E"
         app:passwordToggleEnabled="true">
@@ -119,6 +127,7 @@
 
     <Button
         android:id="@+id/btnSignup"
+        android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:text="Sign Up"

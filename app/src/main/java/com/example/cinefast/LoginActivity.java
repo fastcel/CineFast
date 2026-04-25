@@ -28,64 +28,49 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
+        auth=FirebaseAuth.getInstance();
+        prefs=getSharedPreferences("cinefast_session_pref_v3", MODE_PRIVATE);
 
-        // Firebase
-        auth = FirebaseAuth.getInstance();
-
-        // SharedPreferences (session)
-        prefs = getSharedPreferences("cinefast_session_pref_v3", MODE_PRIVATE);
-        prefs.edit().clear().apply(); // ADD THIS
-
-        // If already logged in → skip login screen
-        FirebaseUser user = auth.getCurrentUser();
-        if (user != null && prefs.getBoolean("isLoggedIn", false)) {
-            startActivity(new Intent(this, MainActivity.class));
+        FirebaseUser user=auth.getCurrentUser();
+        if (user!=null && prefs.getBoolean("isLoggedIn",false)) {
+            startActivity(new Intent(this,HomePage.class));
             finish();
             return;
         }
-
-        // Bind views
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.btnLogin);
-        tvSignup = findViewById(R.id.tvSignup);
-        cbRemember = findViewById(R.id.cbRemember);
-
-        // Login button
+        etEmail=findViewById(R.id.etEmail);
+        etPassword=findViewById(R.id.etPassword);
+        btnLogin=findViewById(R.id.btnLogin);
+        tvSignup=findViewById(R.id.tvSignup);
+        cbRemember=findViewById(R.id.cbRemember);
         btnLogin.setOnClickListener(v -> {
-
-            String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
-            String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            String email=etEmail.getText()!=null?etEmail.getText().toString().trim():"";
+            String password=etPassword.getText()!=null?etPassword.getText().toString().trim():"";
+            if (email.isEmpty()||password.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields",Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            auth.signInWithEmailAndPassword(email, password)
+            auth.signInWithEmailAndPassword(email,password)
                     .addOnSuccessListener(authResult -> {
+                        SharedPreferences.Editor editor=prefs.edit();
 
                         if (cbRemember.isChecked()) {
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putBoolean("isLoggedIn", true);
-                            editor.putString("userEmail", email);
-                            editor.apply();
+                            editor.putBoolean("isLoggedIn",true);
+                            editor.putString("userEmail",email);
+                        } else {
+                            editor.putBoolean("isLoggedIn",false);
                         }
-
-                        startActivity(new Intent(this, MainActivity.class));
+                        editor.apply();
+                        Toast.makeText(this,"Login Successful",Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this,HomePage.class));
                         finish();
-
                     })
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show()
                     );
         });
-
-        // Go to signup
         tvSignup.setOnClickListener(v -> {
-            startActivity(new Intent(this, SignupActivity.class));
+            startActivity(new Intent(this,SignupActivity.class));
             finish();
         });
     }
