@@ -17,7 +17,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class TicketSummaryFragment extends Fragment {
 
@@ -86,7 +91,29 @@ public class TicketSummaryFragment extends Fragment {
             updateTicketInfo(movieName,selectedSeats,seatPrice,snacks);
         }
         saveLastBooking();
+        saveBookingToFirebase();
     }
+
+    private void saveBookingToFirebase() {
+
+        if (getActivity() == null) return;
+
+        int numSeats = selectedSeats != null ? selectedSeats.size() : 0;
+
+        Booking booking = new Booking(
+                null,
+                movieName,
+                getPosterName(movieName),
+                getCurrentDateTime(),
+                numSeats
+        );
+
+        FirebaseDatabase.getInstance()
+                .getReference("bookings")
+                .push()
+                .setValue(booking);
+    }
+
     private void saveLastBooking()
     {
         int seatTotal=(selectedSeats!=null?selectedSeats.size():0)*seatPrice;
@@ -220,5 +247,19 @@ public class TicketSummaryFragment extends Fragment {
         tvTotal.setTextColor(Color.WHITE);
         tvTotal.setTextSize(20f);
         llGrandTotal.addView(tvTotal);
+    }
+
+    private String getCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+    private String getPosterName(String movieName) {
+        if (movieName == null) return "placeholder";
+        switch (movieName) {
+            case "The Dark Knight": return "dark_knight";
+            case "Inception":       return "inception";
+            case "Interstellar":        return "interstellar";
+            default: return "barbie";
+        }
     }
 }

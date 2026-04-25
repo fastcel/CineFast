@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- MAIN CONTENT -->
     <LinearLayout
         android:id="@+id/main"
         android:orientation="vertical"
@@ -14,8 +13,6 @@
         android:layout_height="match_parent"
         android:background="@color/black">
 
-        
-        <!-- YOUR EXISTING FRAGMENTS (UNCHANGED) -->
         <fragment
             android:id="@+id/homeFragment"
             android:name="com.example.cinefast.HomeFragment"
@@ -43,9 +40,15 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
+        <fragment
+            android:id="@+id/bookingFragment"
+            android:name="com.example.cinefast.BookingFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
     </LinearLayout>
 
-    <!-- DRAWER MENU -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="280dp"

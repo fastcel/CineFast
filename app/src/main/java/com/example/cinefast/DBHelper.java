@@ -20,18 +20,24 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE snacks (" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS snacks (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT," +
                 "description TEXT," +
                 "price INTEGER," +
                 "image INTEGER)");
 
-        // 🔥 INSERT INITIAL DATA
-        insertSnack(db, "Popcorn", "Large Buttered", 499, R.drawable.popcorn);
-        insertSnack(db, "Nachos", "With Cheese Dip", 799, R.drawable.nachos);
-        insertSnack(db, "Soft Drinks", "Large Any Flavor", 599, R.drawable.drinks);
-        insertSnack(db, "Candy Mix", "Assorted Candies", 699, R.drawable.candymix);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM snacks", null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            insertSnack(db, "Popcorn", "Large Buttered", 499, R.drawable.popcorn);
+            insertSnack(db, "Nachos", "With Cheese Dip", 799, R.drawable.nachos);
+            insertSnack(db, "Soft Drinks", "Large Any Flavor", 599, R.drawable.drinks);
+            insertSnack(db, "Candy Mix", "Assorted Candies", 699, R.drawable.candymix);
+        }
     }
 
     private void insertSnack(SQLiteDatabase db, String name, String desc, int price, int image) {
@@ -49,7 +55,6 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // 🔥 FETCH SNACKS
     public ArrayList<Snack> getAllSnacks() {
         ArrayList<Snack> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -57,17 +62,24 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM snacks", null);
 
         if (cursor.moveToFirst()) {
+
+            int nameIndex = cursor.getColumnIndexOrThrow("name");
+            int descIndex = cursor.getColumnIndexOrThrow("description");
+            int priceIndex = cursor.getColumnIndexOrThrow("price");
+            int imageIndex = cursor.getColumnIndexOrThrow("image");
+
             do {
                 list.add(new Snack(
-                        cursor.getInt(cursor.getColumnIndexOrThrow("image")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("price"))
+                        cursor.getInt(imageIndex),
+                        cursor.getString(nameIndex),
+                        cursor.getString(descIndex),
+                        cursor.getInt(priceIndex)
                 ));
             } while (cursor.moveToNext());
         }
 
         cursor.close();
+        db.close();
         return list;
     }
 }
