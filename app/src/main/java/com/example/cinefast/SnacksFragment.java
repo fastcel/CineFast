@@ -24,31 +24,34 @@ public class SnacksFragment extends Fragment
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_snacks,container,false);
     }
+
     @Override
     public void onViewCreated(@NonNull View view,@Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listView=view.findViewById(R.id.listViewSnacks);
-        Button btnGo=view.findViewById(R.id.btnGo);
-        snackList=new ArrayList<>();
-        snackList.add(new Snack(R.drawable.popcorn,"Popcorn","Large Buttered",499));
-        snackList.add(new Snack(R.drawable.nachos,"Nachos","With Cheese Dip",799));
-        snackList.add(new Snack(R.drawable.drinks,"Soft Drinks","Large Any Flavor",599));
-        snackList.add(new Snack(R.drawable.candymix,"Candy Mix","Assorted Candies",699));
-        SnackAdapter adapter=new SnackAdapter(getContext(),snackList);
+
+        listView = view.findViewById(R.id.listViewSnacks);
+        Button btnGo = view.findViewById(R.id.btnGo);
+
+        DBHelper dbHelper = new DBHelper(getContext());
+        snackList = dbHelper.getAllSnacks();
+
+        SnackAdapter adapter = new SnackAdapter(getContext(), snackList);
         listView.setAdapter(adapter);
 
-        btnGo.setOnClickListener(v ->{
+        btnGo.setOnClickListener(v -> {
             ArrayList<String> selectedSnacks = new ArrayList<>();
             int snacksTotal = 0;
-            for (Snack s:snackList) {
-                if (s.getQuantity()>0) {
-                    selectedSnacks.add(s.getName()+" x" +s.getQuantity());
-                    snacksTotal+=s.getPrice()*s.getQuantity();
+
+            for (Snack s : snackList) {
+                if (s.getQuantity() > 0) {
+                    selectedSnacks.add(s.getName() + " x" + s.getQuantity());
+                    snacksTotal += s.getPrice() * s.getQuantity();
                 }
             }
-            int seatsTotal=(selectedSeats != null ? selectedSeats.size() : 0) * seatPrice;
-            int grandTotal=seatsTotal+snacksTotal;
-            Toast.makeText(getContext(),"Booking Confirmed!",Toast.LENGTH_SHORT).show();
+
+            int seatsTotal = (selectedSeats != null ? selectedSeats.size() : 0) * seatPrice;
+
+            Toast.makeText(getContext(), "Booking Confirmed!", Toast.LENGTH_SHORT).show();
 
             if (getActivity() instanceof HomePage) {
                 ((HomePage) getActivity()).showTicketSummaryFragment(
@@ -60,6 +63,7 @@ public class SnacksFragment extends Fragment
             }
         });
     }
+
     public void setData(String movieName, ArrayList<String> selectedSeats, int seatPrice, int seatsTotal) {
         this.movieName = movieName;
         this.selectedSeats = selectedSeats;
