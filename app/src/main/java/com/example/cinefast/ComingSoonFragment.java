@@ -32,23 +32,23 @@ public class ComingSoonFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_coming_soon,container,false);
     }
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    public void onViewCreated(@NonNull View view,@Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = view.findViewById(R.id.recyclerViewMovies);
+        recyclerView=view.findViewById(R.id.recyclerViewMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<Movie> movieList = new ArrayList<>();
+        List<Movie> movieList=new ArrayList<>();
         try {
-            InputStream is = requireContext().getAssets().open("movies.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
+            InputStream is=requireContext().getAssets().open("movies.json");
+            int size=is.available();
+            byte[] buffer=new byte[size];
             is.read(buffer);
             is.close();
-            String json = new String(buffer, StandardCharsets.UTF_8);
-            JSONArray array = new JSONArray(json);
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject obj = array.getJSONObject(i);
-                boolean isComingSoon = obj.getBoolean("isComingSoon");
+            String json=new String(buffer,StandardCharsets.UTF_8);
+            JSONArray array=new JSONArray(json);
+            for (int i=0;i<array.length(); i++) {
+                JSONObject obj=array.getJSONObject(i);
+                boolean isComingSoon=obj.getBoolean("isComingSoon");
                 if (isComingSoon) {
                     movieList.add(new Movie(
                             obj.getString("poster"),
@@ -62,7 +62,7 @@ public class ComingSoonFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        adapter = new MovieAdapter(getActivity(), movieList);
+        adapter=new MovieAdapter(getActivity(), movieList);
         recyclerView.setAdapter(adapter);
     }
 }

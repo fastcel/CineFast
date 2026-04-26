@@ -21,10 +21,10 @@ public class SnackAdapter extends ArrayAdapter<Snack> {
     }
     private OnQuantityChangeListener listener;
     public void setOnQuantityChangeListener(OnQuantityChangeListener listener) {
-        this.listener = listener;
+        this.listener=listener;
     }
-    public SnackAdapter(Context context, List<Snack> snacks) {
-        super(context, 0, snacks);
+    public SnackAdapter(Context context,List<Snack> snacks) {
+        super(context,0,snacks);
     }
     @NonNull
     @Override
@@ -55,7 +55,7 @@ public class SnackAdapter extends ArrayAdapter<Snack> {
             quantity.setText(String.valueOf(snack.getQuantity()));
             price.setText("Rs " + (snack.getPrice()*snack.getQuantity()));
             int total=0;
-            for (int i=0; i<getCount();i++)
+            for (int i=0;i<getCount();i++)
             {
                 Snack s=getItem(i);
                 if (s!=null)total+=s.getPrice()*s.getQuantity();

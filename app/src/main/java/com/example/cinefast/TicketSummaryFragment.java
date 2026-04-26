@@ -31,6 +31,8 @@ public class TicketSummaryFragment extends Fragment {
     private int seatPrice;
     private String movieName;
 
+    private String bookingDateTime = "";
+
     public TicketSummaryFragment() {}
 
     @Override
@@ -65,7 +67,10 @@ public class TicketSummaryFragment extends Fragment {
             }
         }
         int totalPrice=seatTotal+snacksTotal;
-        String ticketText="Movie: "+(movieName!=null?movieName:"N/A")+"\n"+"Tickets Booked: "+numTickets+"\n"+"Total Price: Rs "+totalPrice;
+        String ticketText = "Movie: " + (movieName != null ? movieName : "N/A") + "\n"
+                + "Date & Time: " + bookingDateTime + "\n"
+                + "Tickets Booked: " + numTickets + "\n"
+                + "Total Price: Rs " + totalPrice;
         Intent intent=new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, ticketText);
@@ -80,11 +85,12 @@ public class TicketSummaryFragment extends Fragment {
             default:return 0;
         }
     }
-    public void setData(String movieName,ArrayList<String> selectedSeats,int seatPrice,ArrayList<String> snacks) {
+    public void setData(String movieName,ArrayList<String> selectedSeats,int seatPrice,ArrayList<String> snacks,String dateTime) {
         this.movieName=movieName;
         this.selectedSeats=selectedSeats;
         this.seatPrice=seatPrice;
         this.snacks=snacks;
+        this.bookingDateTime = dateTime;
 
         if (getView()!=null)
         {
@@ -95,16 +101,14 @@ public class TicketSummaryFragment extends Fragment {
     }
 
     private void saveBookingToFirebase() {
-
         if (getActivity() == null) return;
-
         int numSeats = selectedSeats != null ? selectedSeats.size() : 0;
 
         Booking booking = new Booking(
                 null,
                 movieName,
                 getPosterName(movieName),
-                getCurrentDateTime(),
+                bookingDateTime.isEmpty() ? getCurrentDateTime() : bookingDateTime,
                 numSeats
         );
 
@@ -113,7 +117,6 @@ public class TicketSummaryFragment extends Fragment {
                 .push()
                 .setValue(booking);
     }
-
     private void saveLastBooking()
     {
         int seatTotal=(selectedSeats!=null?selectedSeats.size():0)*seatPrice;

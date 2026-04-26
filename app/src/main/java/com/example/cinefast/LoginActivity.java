@@ -17,21 +17,17 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
-
     TextInputEditText etEmail, etPassword;
     Button btnLogin;
     TextView tvSignup;
     CheckBox cbRemember;
-
     SharedPreferences prefs;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         auth=FirebaseAuth.getInstance();
         prefs=getSharedPreferences("cinefast_session_pref_v3", MODE_PRIVATE);
-
         FirebaseUser user=auth.getCurrentUser();
         if (user!=null && prefs.getBoolean("isLoggedIn",false)) {
             startActivity(new Intent(this,HomePage.class));
@@ -51,9 +47,8 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
             auth.signInWithEmailAndPassword(email,password)
-                    .addOnSuccessListener(authResult -> {
+                    .addOnSuccessListener(authResult->{
                         SharedPreferences.Editor editor=prefs.edit();
-
                         if (cbRemember.isChecked()) {
                             editor.putBoolean("isLoggedIn",true);
                             editor.putString("userEmail",email);
@@ -69,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show()
                     );
         });
-        tvSignup.setOnClickListener(v -> {
+        tvSignup.setOnClickListener(v->{
             startActivity(new Intent(this,SignupActivity.class));
             finish();
         });

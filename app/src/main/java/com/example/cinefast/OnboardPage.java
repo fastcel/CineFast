@@ -23,14 +23,12 @@ public class OnboardPage extends AppCompatActivity {
             return insets;
         });
         init();
-        btnGo.setOnClickListener((view) -> {
-            Intent intent = new Intent(this, LoginActivity.class);
+        btnGo.setOnClickListener((view)->{
+            Intent intent = new Intent(this,LoginActivity.class);
             startActivity(intent);
             finish();
-
         });
     }
-
     private void init()
     {
         btnGo=findViewById(R.id.btnGo);

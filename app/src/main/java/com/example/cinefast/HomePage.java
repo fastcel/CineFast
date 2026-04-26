@@ -35,7 +35,6 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
         Toast.makeText(this,"Welcome to CineFAST",Toast.LENGTH_SHORT).show();
         Log.d("CineFAST","HomePage Launched");
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -43,7 +42,6 @@ public class HomePage extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         prefs = getSharedPreferences("cinefast_session_pref_v3",MODE_PRIVATE);
         navigationView.setNavigationItemSelectedListener(item->{
-
             int id=item.getItemId();
             if (id==R.id.nav_home) {
                 showFragment(homeFragment);
@@ -57,7 +55,6 @@ public class HomePage extends AppCompatActivity {
             drawerLayout.closeDrawers();
             return true;
         });
-
         homeFragment=(HomeFragment) getSupportFragmentManager().findFragmentById(R.id.homeFragment);
         seatFragment=(SeatSelectionFragment) getSupportFragmentManager().findFragmentById(R.id.seatFragment);
         snacksFragment=(SnacksFragment) getSupportFragmentManager().findFragmentById(R.id.snacksFragment);
@@ -84,11 +81,9 @@ public class HomePage extends AppCompatActivity {
             }
         });
     }
-
     public void openDrawer() {
         drawerLayout.openDrawer(GravityCompat.START);
     }
-
     private void logoutUser() {
         auth.signOut();
         prefs.edit().clear().apply();
@@ -107,23 +102,18 @@ public class HomePage extends AppCompatActivity {
         String msg="Movie: "+movie+"\nSeats: "+seats+"\nTotal: $"+total;
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
-
     public void showSeatFragment(String movieName, boolean isComingSoon, String trailerUrl) {
         seatFragment.setMovieData(movieName,isComingSoon,trailerUrl);
         showFragment(seatFragment);
     }
-    public void showSnacksFragment(String movieName,ArrayList<String> selectedSeats,int seatPrice,int seatsTotal)
-    {
-        snacksFragment.setData(movieName,selectedSeats,seatPrice,seatsTotal);
+    public void showSnacksFragment(String movieName, ArrayList<String> selectedSeats, int seatPrice, int seatsTotal, String dateTime) {
+        snacksFragment.setData(movieName, selectedSeats, seatPrice, seatsTotal, dateTime);
         showFragment(snacksFragment);
     }
-
-    public void showTicketSummaryFragment(String movieName,ArrayList<String>selectedSeats,int seatPrice,ArrayList<String> snacks)
-    {
-        summaryFragment.setData(movieName,selectedSeats,seatPrice,snacks);
+    public void showTicketSummaryFragment(String movieName, ArrayList<String> selectedSeats, int seatPrice, ArrayList<String> snacks, String dateTime) {
+        summaryFragment.setData(movieName, selectedSeats, seatPrice, snacks, dateTime);
         showFragment(summaryFragment);
     }
-
     public void saveLastBooking(String movieName,int seats,int total)
     {
         SharedPreferences prefs=getSharedPreferences("LAST_BOOKING",MODE_PRIVATE);

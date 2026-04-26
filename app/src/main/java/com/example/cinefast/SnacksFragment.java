@@ -20,6 +20,7 @@ public class SnacksFragment extends Fragment
     ArrayList<String> selectedSeats;
     int seatPrice;
     int seatsTotal;
+    String bookingDateTime="";
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_snacks,container,false);
@@ -27,47 +28,41 @@ public class SnacksFragment extends Fragment
 
     @Override
     public void onViewCreated(@NonNull View view,@Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        listView = view.findViewById(R.id.listViewSnacks);
-        Button btnGo = view.findViewById(R.id.btnGo);
-
-        DBHelper dbHelper = new DBHelper(getContext());
-        snackList = dbHelper.getAllSnacks();
-
-        SnackAdapter adapter = new SnackAdapter(getContext(), snackList);
+        super.onViewCreated(view,savedInstanceState);
+        listView=view.findViewById(R.id.listViewSnacks);
+        Button btnGo=view.findViewById(R.id.btnGo);
+        DBHelper dbHelper=new DBHelper(getContext());
+        snackList=dbHelper.getAllSnacks();
+        SnackAdapter adapter=new SnackAdapter(getContext(), snackList);
         listView.setAdapter(adapter);
-
-        btnGo.setOnClickListener(v -> {
-            ArrayList<String> selectedSnacks = new ArrayList<>();
+        btnGo.setOnClickListener(v->{
+            ArrayList<String> selectedSnacks=new ArrayList<>();
             int snacksTotal = 0;
-
-            for (Snack s : snackList) {
-                if (s.getQuantity() > 0) {
-                    selectedSnacks.add(s.getName() + " x" + s.getQuantity());
-                    snacksTotal += s.getPrice() * s.getQuantity();
+            for (Snack s:snackList) {
+                if (s.getQuantity()>0) {
+                    selectedSnacks.add(s.getName()+" x"+s.getQuantity());
+                    snacksTotal+=s.getPrice()*s.getQuantity();
                 }
             }
-
-            int seatsTotal = (selectedSeats != null ? selectedSeats.size() : 0) * seatPrice;
-
-            Toast.makeText(getContext(), "Booking Confirmed!", Toast.LENGTH_SHORT).show();
-
+            int seatsTotal=(selectedSeats!=null?selectedSeats.size():0)*seatPrice;
+            Toast.makeText(getContext(),"Booking Confirmed!",Toast.LENGTH_SHORT).show();
             if (getActivity() instanceof HomePage) {
                 ((HomePage) getActivity()).showTicketSummaryFragment(
                         movieName,
                         selectedSeats,
                         seatPrice,
-                        selectedSnacks
+                        selectedSnacks,
+                        bookingDateTime
                 );
             }
         });
     }
 
-    public void setData(String movieName, ArrayList<String> selectedSeats, int seatPrice, int seatsTotal) {
-        this.movieName = movieName;
-        this.selectedSeats = selectedSeats;
-        this.seatPrice = seatPrice;
-        this.seatsTotal = seatsTotal;
+    public void setData(String movieName,ArrayList<String> selectedSeats,int seatPrice,int seatsTotal,String bookingDateTime) {
+        this.movieName=movieName;
+        this.selectedSeats=selectedSeats;
+        this.seatPrice=seatPrice;
+        this.seatsTotal=seatsTotal;
+        this.bookingDateTime=bookingDateTime;
     }
 }

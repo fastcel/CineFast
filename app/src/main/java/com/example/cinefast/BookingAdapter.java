@@ -45,7 +45,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
                 context.getPackageName()
         );
         holder.poster.setImageResource(resId);
-        holder.delete.setOnClickListener(v -> showCancelDialog(b, position));
+        holder.delete.setOnClickListener(v->showCancelDialog(b, position));
     }
     private void showCancelDialog(Booking booking, int position) {
         new AlertDialog.Builder(context)
@@ -96,8 +96,8 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
     }
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView poster, delete;
-        TextView title, date, tickets;
+        ImageView poster,delete;
+        TextView title,date,tickets;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             poster=itemView.findViewById(R.id.imgPoster);

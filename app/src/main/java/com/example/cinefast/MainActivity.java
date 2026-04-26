@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         applyAnimation();
         moveToOnboard();
     }
-
     private void moveToOnboard() {
         new Handler().postDelayed(()->{
             startActivity(new Intent(MainActivity.this, OnboardPage.class));
