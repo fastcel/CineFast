@@ -108,18 +108,12 @@ public class SeatSelectionFragment extends Fragment {
         } else {
             btnBook.setText("Book Seats");
             btnSnacks.setText("Proceed to Snacks");
-            btnSnacks.setOnClickListener(v->{
-                if (getActivity() instanceof HomePage) {
-                    ArrayList<String> seatsToPass=new ArrayList<>(selectedSeatNames);
-                    int seatsTotal=selectedSeats.size()*seatPrice;
-                    ((HomePage) getActivity()).showSnacksFragment(
-                            movieName,
-                            seatsToPass,
-                            seatPrice,
-                            seatsTotal,
-                            selectedDateTime
-                    );
+            btnSnacks.setOnClickListener(v -> {
+                if (selectedSeats.isEmpty()) {
+                    Toast.makeText(getContext(), "Please select seats first", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                showDateTimePickerForSnacks();
             });
             btnBook.setOnClickListener(v->{
                 if (selectedSeats.isEmpty()) {
@@ -130,8 +124,61 @@ public class SeatSelectionFragment extends Fragment {
             });
         }
     }
+
+    private String[] generateDates() {
+        String[]dates=new String[5];
+        java.util.Calendar cal=java.util.Calendar.getInstance();
+        SimpleDateFormat dayFormat=new SimpleDateFormat("EEE",Locale.getDefault());
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dd MMM",Locale.getDefault());
+        for (int i=0;i<5;i++){
+            if (i==0) {
+                dates[i]="Today - "+dateFormat.format(cal.getTime());
+            } else if (i==1) {
+                dates[i]="Tomorrow - "+dateFormat.format(cal.getTime());
+            } else {
+                dates[i]=dayFormat.format(cal.getTime())+" - "+dateFormat.format(cal.getTime());
+            }
+            cal.add(java.util.Calendar.DAY_OF_YEAR,1);
+        }
+        return dates;
+    }
+
+    private void showDateTimePickerForSnacks() {
+        String[] dates=generateDates();
+        String[][] timesPerDate={
+                {"6:00 PM","9:00 PM"},
+                {"12:00 PM","3:00 PM","6:00 PM","9:00 PM"},
+                {"12:00 PM","3:00 PM","6:00 PM","9:00 PM"},
+                {"3:00 PM","6:00 PM","9:00 PM"},
+                {"3:00 PM","6:00 PM","9:00 PM"}
+        };
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Select a date")
+                .setItems(dates, (dialog,dateIndex) ->
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle("Select a showtime")
+                                .setItems(timesPerDate[dateIndex],(dialog2,timeIndex) -> {
+                                    selectedDateTime=formatForStorage(dateIndex,timesPerDate[dateIndex][timeIndex]);
+                                    if (getActivity() instanceof HomePage) {
+                                        ArrayList<String>seatsToPass=new ArrayList<>(selectedSeatNames);
+                                        int seatsTotal=selectedSeats.size()*seatPrice;
+                                        ((HomePage) getActivity()).showSnacksFragment(
+                                                movieName,
+                                                seatsToPass,
+                                                seatPrice,
+                                                seatsTotal,
+                                                selectedDateTime
+                                        );
+                                    }
+                                })
+                                .setNegativeButton("Back",(d,w) -> showDateTimePickerForSnacks())
+                                .show()
+                )
+                .setNegativeButton("Cancel",null)
+                .show();
+    }
     private void showDateTimePicker(MaterialButton btnBook,MaterialButton btnSnacks) {
-        String[] dates={"Today - 26 Apr", "Sat - 27 Apr", "Sun - 28 Apr", "Mon - 29 Apr", "Tue - 30 Apr"};
+        String[] dates = generateDates();
         String[][] timesPerDate={
                 {"6:00 PM", "9:00 PM"},
                 {"12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"},
